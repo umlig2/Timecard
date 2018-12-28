@@ -1,0 +1,1323 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8">
+    <title>Free Online Time Sheet Calculator</title>
+    </head><body>
+    <script language="JavaScript" src="../template/template1.js"></script>
+    <script>
+    //window.X300x250=new Date(); 
+    //var rnd = Math.floor(Math.random()*3); if(rnd==1) window.X160x600='../ads/1_160x600ad.html';
+    document.write(header());
+    </script>
+    <!-- start: content -->
+    
+    <h1>Free Online Time Sheet Calculator</h1>
+    
+    <div class="info">
+        <b>Most Recent Update</b> - Bug fixes, functionality suggestions, some code refactoring and potentially some user impacting changes related to replacing cookie storage with HTML5 localstorage. 
+        See the change log box below for additional details.
+        <p>If you notice any problems, please let me know. 
+        <p>If you want to use a previous revision look in the "previous versions" section below for links. 
+        <br>(Most recent backup: <a href="free-online-time-sheet_pre-2015-09-20.htm">Prior to 2015-09-20</a>)
+    
+    </div>
+    
+    <p>This timecard tool seeks to provide a quick way to convert from work hours into a decimal for calculating your pay check.
+    I wrote it to keep track of my own work hours and I still use it. 
+    
+    <b>Use at your own risk.</b> 
+    For example, if it calculates something incorrectly due to a bug, you are ultimately responsible to sanity check the results (but if you find bugs, please let me know--lets squash those!) 
+    
+    <p>Thanks for the feedback and suggestions. Going forward, I'll try to make edits as time permits. 
+    
+    <script type="text/javascript">
+    //<!--
+    // given an id of "opt1" as a source/caller auto-derive "opt1_content" as the target container
+    function showHide( obj ) {
+        var tObj = document.getElementById( obj.id + '_content' );
+    
+        if ( obj.isTargetShowing == true ) {
+            obj.isTargetShowing = false; 
+            obj.innerHTML = 'Show';
+            tObj.style.display = 'none';
+        }
+        else {
+            obj.isTargetShowing = true; 
+            obj.innerHTML = 'Hide';
+            tObj.style.display = '';
+        }
+    
+        return false;
+    }
+    //--></script>
+    
+    <!-- start: instructions -->
+    <div class="notice">
+      Instructions: (scenario based, to illustrate some time-saving features)
+      &nbsp;&nbsp;[<a id="optional1" href="#" onclick="return showHide(this)">Show</a>] 
+      <div id="optional1_content" style="display:none;">
+        <ol>
+        <li>Press ALT-1<sup>1</sup> to jump to the first input on row 1. 
+        <li>Enter "8" and press TAB<sup>2</sup> until the cursor appears in the ending hour (3 times) 
+        <li>Enter "5" and press TAB
+        <li>Enter the hours and minutes for a lunch break which are <b>not</b> covered time. 
+        <li>Repeat these steps for row 2, 3, and so on.
+        <li>As you move through the fields the totals for the row will auto-calculate.
+        <li>As you move through the rows, the aggregated totals will update and display as Total Hrs.
+        </ol>
+        
+        <p>Notes/Short-cuts:
+        <ul class="footnotes">
+          <li><sup><b>1</b></sup> 
+            The underlined characters imply a short-cut key which can make data-entry faster by reducing movement between the mouse and keyboard to navigate the form fields. 
+            These are accessed by pressing ALT plus the underlined key. 
+            If you use Firefox you need to press SHIFT-ALT-1, they just needed to be different I guess. 
+            When you see the same key underlined more than once, the short-cut should move sequentially through the fields sharing that key. 
+          <li><sup><b>2</b></sup>
+            TAB moves the cursor to the "next" input field. SHIFT-TAB moves the cursor to the "previous" input field. 
+          <li><sup><b>*</b></sup> 
+            CTRL-A selects/highlights all text in the current input field.
+      </div>
+    </div>
+    <!-- end: instructions -->
+    
+    
+    <!-- start: previous versions -->
+    <p><div class="notice">
+        Previous versions can be found here:
+        &nbsp;&nbsp;[<a id="optional2" href="#" onclick="return showHide(this)">Show</a>] 
+        <div id="optional2_content" style="display:none;">
+            <ul>
+                <li><a href="free-online-time-sheet_pre-2015-09-20.htm">Prior to 2015-09-20</a>
+                <li><a href="free-online-time-sheet_pre-2011-12-04.htm">Prior to 2011-12-04</a>
+            </ul>
+        </div>
+    </div>
+    <!-- end: previous versions -->
+    
+    
+    <!-- start: version info -->
+    <p><div class="notice">
+      Change log and features list: 
+      &nbsp;&nbsp;[<a id="optional3" href="#" onclick="return showHide(this)">Show</a>] 
+      <div id="optional3_content" style="display:none;">
+    
+        <p>09/20/15:</p>
+        <ul>
+            <li>Force parse to treat numbers as base 10 to avoid accidental conversion to octal (base 8)
+            <li>Fix a reported rounding issue where hours above 12 weren't rolling over to 1 and triggering AM/PM boundary cross-over.
+            <li>Refactor "remember as template" to replace the cookie with localStorage. (<b>Unfortunately, if you were using the cookie storage, 
+                you might need to rebuild and re-save...I'm sorry about that.</b> There are some advantages with local storage that I'm going to need--this meant biting the bullet and 
+                replacing the cookie mechanism though. Again, sorry about that if you end up needing to repopulate your stored data.)
+            <li>Add a label to the printing form per feedback.
+            <li>Optional date column (fill if needed or leave empty if not). Note: I was hoping to use a date input type, but isn't consistent across browsers--hoping to revisit as support improves.
+            <li>Optional rate field and estimate based on rate. (Again, please don't rely on this--you need to double-check any math done here for accuracy.)
+            <li>Change the javascript modal confirm to (hopefully) less annoying button when offering to pre-fill the form with previously saved values.
+            <li>A bit of code refactoring to hopefully help with maintenance going forward--and with any luck, no new bugs added :-(.
+        </ul>
+    
+        <p>01/13/13:</p>
+        <ul>
+            <li>Adding a beta test printing feature. 
+                Added "Print" button which renders a print-only flavored version of the timecard and calls the system print operation. 
+            <li>Switching doctype to begin pursuing using HTML5 for this application
+        </ul>
+    
+        <p>12/04/11:</p>
+        <ul>
+            <li>Add "overtime" column: Present any hours/minutes greater than 8 in a day in the overtime column to make it easy to differentiate from the total.
+            <li>Add "normal" hours column: Hours up to 8 in any day...this is the counterpart to overtime column.
+            <li>Remember as template: When button is clicked, a cookie will be set containing the current state of the form. 
+                The idea is that when you return, if it finds the cookie it will ask if you want to set the initial values you remembered as the starting point 
+                for entering time details.
+        </ul>
+    
+        <p>Previously:</p>
+        <ul>
+            <li>More lines. (Went from 5 lines... the standard work week I was using when I wrote this, to 14 days based on various input... basically two full weeks based on a seven day week.)
+            <li>Less focus on the how-to aspect of writing of this app. (At inception the focus of this project was to demonstrate JavaScript programming techniques, but given that the app has merit without the learning component--and that audience is probably different, I'm working to isolate the functionalities so we can extend this more readily going forward.)
+            <li>Various bug fixes.
+        </ul>
+      </div>
+    </div>
+    <!-- end: version info -->
+    
+    <ul>
+        <li><span class="hello1">test1</span></li>
+        <li><span class="hello2">test2</span></li>
+        <li><span class="hello3"></span></li>
+    </ul>
+    
+    <style id="ivTimecardCSS">
+    .t1{ width: 30px; }
+    .header_row td{ border-bottom:1px #333 solid; border-right:1px #333 solid; text-align:center; white-space:nowrap; }
+    .sm{ font-size: 70%; }
+    .data_row td{ border-right:1px #eeeeee solid; white-space:nowrap; }
+    .odd td{ background-color:#f3f3ff; }
+    
+    /* for show_message managed container */
+    #message_el.error, #message_el.info, #message_el.warning {
+        padding: 10px; 
+        color: #333; 
+        background: #fff; 
+        outline: 1px #999 solid;
+    }
+    #message_el td { color: #333; }
+    #message_el.error { 
+        background: #FDD; border: 2px #F99 solid;
+    }
+    #message_el.info { 
+        background: #DDF; border: 2px #99F solid;
+    }
+    #message_el.warning {
+        background: #FFC; border: 2px #DD6 solid;
+    }
+    </style>
+    
+    
+    <p>
+            <div id="ivnS1">
+                    <form name="ivForm" onsubmit="return hSubmit(this);">
+                    <div id="message_el" class=""></div>
+                    <div id="cardViewPort" style="height:300px; overflow-y:scroll;">
+                    <script type="text/javascript" src="timesheet.js-source"></script><div id="ivTimecard"><table><tbody><tr><td style="padding:5px;"><label for="label" title="Optional label such as name, id, period, etc."><u>L</u>abel:</label>&nbsp;<input accesskey="l" name="label"></td><td><label for="rate" title="Optional rate. (Do not rely on this for math.)">Rate:</label>&nbsp;<input name="rate"><input type="button" value="Estimate" title="Attempt to calculate. (Please double-check any math this does!)" onclick="calc_by_rate(this)"></td><td></td></tr></tbody></table><table cellpadding="4" cellspacing="0" width="100%" style="background-color:#fff;">  <tbody><tr style="background:#ddd;" class="header_row" valign="top">    <td>Row</td>    <td>Starting Time <div class="sm">(HH:MM)</div></td>    <td>Ending Time <div class="sm">(HH:MM)</div></td>    <td>Lunch/Breaks <div class="sm">(HH:MM)</div></td>    <td>Normal <div class="sm"></div></td>    <td>Overtime <div class="sm"></div></td>    <td>Total</td>    <td title="Optional Date">Date</td>    <td width="100%" id="ivnX">&nbsp;&nbsp;&nbsp;<input type="button" id="floatUI" name="floatUI" onclick="ivBtnToggle(this);obj.blur();return false;" title="Pin the calculator" value="+"></td>  </tr>  <tr>    <td colspan="4" align="right"><b>Totals:</b></td>    <td id="elTotalNormal1">0.00</td>    <td id="elTotalOvertime1">0.00</td>    <td id="elTotalHours1">0.00</td>  </tr>  <tr class="data_row odd">    <td><u>1</u></td>    <td><input name="start_hr1" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="1"> :        <input name="start_min1" value="00" class="t1" onchange="return calc(this)">         <select name="start_time1" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr1" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time1.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min1" value="00" class="t1" onchange="return calc(this)">         <select name="end_time1" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr1" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min1" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal1">0.00</div></td>    <td><div id="rowOvertime1">0.00</div></td>    <td><div id="rowTotal1">0.00</div><div id="note1"></div></td>    <td><input type="text" name="date1" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row even">    <td><u>2</u></td>    <td><input name="start_hr2" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="2"> :        <input name="start_min2" value="00" class="t1" onchange="return calc(this)">         <select name="start_time2" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr2" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time2.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min2" value="00" class="t1" onchange="return calc(this)">         <select name="end_time2" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr2" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min2" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal2">0.00</div></td>    <td><div id="rowOvertime2">0.00</div></td>    <td><div id="rowTotal2">0.00</div><div id="note2"></div></td>    <td><input type="text" name="date2" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row odd">    <td><u>3</u></td>    <td><input name="start_hr3" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="3"> :        <input name="start_min3" value="00" class="t1" onchange="return calc(this)">         <select name="start_time3" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr3" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time3.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min3" value="00" class="t1" onchange="return calc(this)">         <select name="end_time3" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr3" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min3" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal3">0.00</div></td>    <td><div id="rowOvertime3">0.00</div></td>    <td><div id="rowTotal3">0.00</div><div id="note3"></div></td>    <td><input type="text" name="date3" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row even">    <td><u>4</u></td>    <td><input name="start_hr4" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="4"> :        <input name="start_min4" value="00" class="t1" onchange="return calc(this)">         <select name="start_time4" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr4" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time4.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min4" value="00" class="t1" onchange="return calc(this)">         <select name="end_time4" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr4" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min4" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal4">0.00</div></td>    <td><div id="rowOvertime4">0.00</div></td>    <td><div id="rowTotal4">0.00</div><div id="note4"></div></td>    <td><input type="text" name="date4" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row odd">    <td><u>5</u></td>    <td><input name="start_hr5" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="5"> :        <input name="start_min5" value="00" class="t1" onchange="return calc(this)">         <select name="start_time5" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr5" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time5.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min5" value="00" class="t1" onchange="return calc(this)">         <select name="end_time5" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr5" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min5" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal5">0.00</div></td>    <td><div id="rowOvertime5">0.00</div></td>    <td><div id="rowTotal5">0.00</div><div id="note5"></div></td>    <td><input type="text" name="date5" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row even">    <td><u>6</u></td>    <td><input name="start_hr6" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="6"> :        <input name="start_min6" value="00" class="t1" onchange="return calc(this)">         <select name="start_time6" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr6" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time6.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min6" value="00" class="t1" onchange="return calc(this)">         <select name="end_time6" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr6" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min6" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal6">0.00</div></td>    <td><div id="rowOvertime6">0.00</div></td>    <td><div id="rowTotal6">0.00</div><div id="note6"></div></td>    <td><input type="text" name="date6" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row odd">    <td><u>7</u></td>    <td><input name="start_hr7" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="7"> :        <input name="start_min7" value="00" class="t1" onchange="return calc(this)">         <select name="start_time7" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr7" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time7.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min7" value="00" class="t1" onchange="return calc(this)">         <select name="end_time7" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr7" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min7" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal7">0.00</div></td>    <td><div id="rowOvertime7">0.00</div></td>    <td><div id="rowTotal7">0.00</div><div id="note7"></div></td>    <td><input type="text" name="date7" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row even">    <td><u>8</u></td>    <td><input name="start_hr8" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="8"> :        <input name="start_min8" value="00" class="t1" onchange="return calc(this)">         <select name="start_time8" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr8" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time8.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min8" value="00" class="t1" onchange="return calc(this)">         <select name="end_time8" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr8" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min8" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal8">0.00</div></td>    <td><div id="rowOvertime8">0.00</div></td>    <td><div id="rowTotal8">0.00</div><div id="note8"></div></td>    <td><input type="text" name="date8" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row odd">    <td><u>9</u></td>    <td><input name="start_hr9" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="9"> :        <input name="start_min9" value="00" class="t1" onchange="return calc(this)">         <select name="start_time9" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr9" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time9.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min9" value="00" class="t1" onchange="return calc(this)">         <select name="end_time9" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr9" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min9" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal9">0.00</div></td>    <td><div id="rowOvertime9">0.00</div></td>    <td><div id="rowTotal9">0.00</div><div id="note9"></div></td>    <td><input type="text" name="date9" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row even">    <td><u>1</u>0</td>    <td><input name="start_hr10" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="1"> :        <input name="start_min10" value="00" class="t1" onchange="return calc(this)">         <select name="start_time10" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr10" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time10.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min10" value="00" class="t1" onchange="return calc(this)">         <select name="end_time10" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr10" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min10" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal10">0.00</div></td>    <td><div id="rowOvertime10">0.00</div></td>    <td><div id="rowTotal10">0.00</div><div id="note10"></div></td>    <td><input type="text" name="date10" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row odd">    <td><u>1</u>1</td>    <td><input name="start_hr11" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="1"> :        <input name="start_min11" value="00" class="t1" onchange="return calc(this)">         <select name="start_time11" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr11" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time11.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min11" value="00" class="t1" onchange="return calc(this)">         <select name="end_time11" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr11" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min11" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal11">0.00</div></td>    <td><div id="rowOvertime11">0.00</div></td>    <td><div id="rowTotal11">0.00</div><div id="note11"></div></td>    <td><input type="text" name="date11" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row even">    <td><u>1</u>2</td>    <td><input name="start_hr12" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="1"> :        <input name="start_min12" value="00" class="t1" onchange="return calc(this)">         <select name="start_time12" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr12" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time12.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min12" value="00" class="t1" onchange="return calc(this)">         <select name="end_time12" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr12" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min12" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal12">0.00</div></td>    <td><div id="rowOvertime12">0.00</div></td>    <td><div id="rowTotal12">0.00</div><div id="note12"></div></td>    <td><input type="text" name="date12" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row odd">    <td><u>1</u>3</td>    <td><input name="start_hr13" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="1"> :        <input name="start_min13" value="00" class="t1" onchange="return calc(this)">         <select name="start_time13" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr13" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time13.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min13" value="00" class="t1" onchange="return calc(this)">         <select name="end_time13" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr13" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min13" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal13">0.00</div></td>    <td><div id="rowOvertime13">0.00</div></td>    <td><div id="rowTotal13">0.00</div><div id="note13"></div></td>    <td><input type="text" name="date13" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row even">    <td><u>1</u>4</td>    <td><input name="start_hr14" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="1"> :        <input name="start_min14" value="00" class="t1" onchange="return calc(this)">         <select name="start_time14" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr14" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time14.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min14" value="00" class="t1" onchange="return calc(this)">         <select name="end_time14" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr14" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min14" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal14">0.00</div></td>    <td><div id="rowOvertime14">0.00</div></td>    <td><div id="rowTotal14">0.00</div><div id="note14"></div></td>    <td><input type="text" name="date14" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row odd">    <td><u>1</u>5</td>    <td><input name="start_hr15" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="1"> :        <input name="start_min15" value="00" class="t1" onchange="return calc(this)">         <select name="start_time15" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr15" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time15.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min15" value="00" class="t1" onchange="return calc(this)">         <select name="end_time15" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr15" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min15" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal15">0.00</div></td>    <td><div id="rowOvertime15">0.00</div></td>    <td><div id="rowTotal15">0.00</div><div id="note15"></div></td>    <td><input type="text" name="date15" style="width:80px;"></td>    <td></td>  </tr>  <tr class="data_row even">    <td><u>1</u>6</td>    <td><input name="start_hr16" value="00" class="t1" onchange="return checkInputVal(this); " accesskey="1"> :        <input name="start_min16" value="00" class="t1" onchange="return calc(this)">         <select name="start_time16" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="end_hr16" value="00" class="t1" onchange="if(!this.init){ this.init=1; this.form.end_time16.options.selectedIndex=1; }; return calc(this)"> :        <input name="end_min16" value="00" class="t1" onchange="return calc(this)">         <select name="end_time16" onchange="return calc(this)">        <option>AM</option><option>PM        </option></select>    </td>    <td><input name="break_hr16" value="00" class="t1" onchange="return calc(this)"> :        <input name="break_min16" value="00" class="t1" onchange="return calc(this)">     </td>    <td><div id="rowNormal16">0.00</div></td>    <td><div id="rowOvertime16">0.00</div></td>    <td><div id="rowTotal16">0.00</div><div id="note16"></div></td>    <td><input type="text" name="date16" style="width:80px;"></td>    <td></td>  </tr>  <tr>    <td colspan="4" align="right"><b>Totals:</b></td>    <td id="elTotalNormal2">0.00</td>    <td id="elTotalOvertime2">0.00</td>    <td id="elTotalHours2">0.00</td>  </tr></tbody></table></div>
+                    </div>
+                    
+                    
+                    <script type="text/javascript">
+                    //<!--
+                    // datastore get
+                    function ds_get( key ){
+                        var ls = localStorage;
+                        var ds, data;
+                    
+                        if ( !ls ) { 
+                            console.error('Unable to find localStorage.');
+                            return 0;
+                        }
+                    
+                        try {
+                            // create the data store if it doesn't exist
+                            if ( typeof( ls.data ) === 'undefined' ) {
+                    
+                                data = {};
+                    
+                                // stringify it for localStorage
+                                ls.data = JSON.stringify( data );
+                    
+                            }
+                    
+                            // get a reference to the data store
+                            ds = ls.data;
+                    
+                        } catch( e ) {
+                            console.error( e );
+                        }
+                    
+                        if ( typeof( ds ) === 'string' && ds.length ) {
+                            ds = JSON.parse( ds );
+                        }
+                    
+                        // return the value of the requested key
+                        if ( key ) {
+                            return ds.data[ key ];
+                        } 
+                        // or a reference to the data store
+                        else {
+                            return ds;
+                        }
+                    }
+                    
+                    // datastore set
+                    function ds_set( key, value ){
+                    
+                        var ds = ds_get();
+                    
+                    //    if ( typeof( ds.config ) === 'undefined' ) ds.config = {};
+                    
+                        try {
+                            ds.data[ key ] = value;
+                        } catch(e) {
+                            // returning something means an error
+                            return e;
+                        }
+                    
+                        // returning nothing means success
+                        return;
+                    
+                    }
+                    
+                    
+                    function getCookie(name){
+                      // usage: getCookie("name");
+                      var oRE = new RegExp(name + "=([^;]+)") 
+                      var sValue = oRE.exec(document.cookie);
+                      return (sValue != null) ? unescape(sValue[1]) : null;
+                    }
+                    
+                    function setCookie(name, value, ttl){ 
+                      // usage: setCookie("name", value, (ttl=int number of days));
+                      var oToday = new Date();
+                      var sTTL = '';
+                      if(ttl){
+                        var expiry = new Date(oToday.getTime() + ttl * 24 * 60 * 60 * 1000); // set expiration of cookie based on ttl
+                        sTTL='; expires=' + expiry.toGMTString();  
+                      }
+                      document.cookie=name + "=" + escape(value) + sTTL;
+                    }
+                    
+                    function getTemplate(obj){
+                      /* this button can set or delete the cookie...lets see which we're doing */
+                    
+                      if(obj.value.match(/Delete/)){
+                        if(confirm('Click OK if you want to delete the cookie.')){
+                    //      setCookie('ivForm',null,-1);
+                            ds_set('ivForm', null );
+                          obj.value = 'Remember as Template';
+                          alert('Your remembered values are forgotten. The cookie has been cleared.');
+                        }
+                      }
+                      else{
+                        /* read the values from the app and store as cookie */
+                        var vals = '';
+                        var f = obj.form;
+                        for(var i=0; i<f.elements.length; i++){
+                          if(f.elements[i].name && f.elements[i].value){
+                            switch(f.elements[i].type){
+                              case 'checkbox': if(!f.elements[i].checked) continue; break; /* dont store value if the checkbox isn't checked */
+                              case 'button': continue; break; /* don't need to store these vals */
+                              default: break; 
+                            }
+                            vals += f.elements[i].name + '=' + f.elements[i].value +';';
+                          }
+                        }
+                        var vals = escape(vals);
+                    //    setCookie('ivForm',vals,3650);
+                        ds_set('ivForm',vals);
+                        obj.value = 'Delete Remembered Template Cookie';
+                        alert('A cookie has been set to remember the current values next time this page is visited.');
+                      }
+                    }
+                    
+                    
+                    // if cookie containing default values exists, ask user if it should be used to populate the form
+                    function setTemplate(){
+                        var arr, i, j, tmp, obj;
+                        var f = document.ivForm;
+                    //    var preset = getCookie('ivForm') || null;
+                        var preset = ds_get('ivForm') || null;
+                    alert(preset);
+                        //  if(preset && confirm('Click ok to prefill the form with your remembered values.')){
+                        if ( ! preset ) {
+                            show_message({ 
+                                msg: 'No remembered settings found. Fill out the form first, then press "Remember as Template" to store.', 
+                                msg_type: 'warning'
+                            });
+                        } else {
+                            show_message({ 
+                                msg: 'Attempting to fill form values with your previously remembered settings.', 
+                                msg_type: 'info' 
+                            });
+                    
+                            preset = unescape( preset );
+                            arr = preset.split(/;/);
+                            for( i = 0; i < arr.length; i++ ) {
+                                tmp = arr[i].split(/=/);
+                                // if(!confirm(arr[i]+ ' -- ' +tmp[0]+ ' -- ' +tmp[1])) exit; // debugging
+                                obj = eval( 'f.elements["' + tmp[0] + '"];');
+                                if ( obj ) {
+                                    switch( obj.type ) {
+                                        case 'select-one': // IE doesn't set these correctly based on value alone...we have to scan the options
+                                            for ( j = 0; j < obj.options.length; j++ ) {
+                                                if ( obj.options[ j ].value == tmp[1] ) obj.selectedIndex = j;
+                                            }
+                                            break;
+                                        case 'checkbox': 
+                                            obj.checked = true; 
+                                            break; // gotta do more than just set value on this one
+                                        default: 
+                                            obj.value = tmp[1]; 
+                                            break; 
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                    function calc_by_rate( el ) {
+                        show_message({
+                            msg: 'Attempting to apply rate to hours. (Please double-check this math!)',
+                            msg_type: 'warning'
+                        });
+                    }
+                    
+                    //--></script>
+                    
+                    
+                   
+                    
+                    
+                    <script type="text/javascript">
+                    //<!--
+                    
+                    // global messaging display handler 
+                    // supports message styling via CSS class
+                    // suggestions: error, info, warning, success
+                    function show_message( args ) {
+                        var html = '';
+                        var args = args || {};
+                        var el = document.getElementById( 'message_el' );
+                    
+                        // populate the message
+                        el.className = args.msg_type || '';
+                        el.innerHTML = args.msg || '';
+                    
+                        // add a close button
+                        if ( el.innerHTML ) {
+                            html = el.innerHTML;
+                            el.innerHTML = '<table width="100%"><tr valign="top"><td width="100%">' + html + '</td>'
+                                         + '<td><div onclick="clear_message();">(close)</div></td></tr></table>';
+                        }
+                    
+                        // if a source element was provided, set focus and select it as a user convenience
+                        if ( args.el ) {
+                            window.errObj = args.el;
+                            setTimeout(function() {
+                                if ( window.errObj.focus ) {
+                                    window.errObj.focus();
+                                }
+                                if ( window.errObj.select ) {
+                                    window.errObj.select();
+                                } 
+                                window.errObj=0;
+                            }, 250);
+                        }
+                    
+                        return false;
+                    }
+                    // clear the show_message handler
+                    function clear_message(){ show_message(); }
+                    
+                    
+                    validate = function(obj){
+                        tmp = parseInt(obj.value,10);
+                    
+                        // confirm it's a number (added 12/12/2014)
+                        if (isNaN(tmp)){ 
+                            return show_message({ 
+                                msg: 'Please enter a number.', 
+                                msg_type: 'error' 
+                            }); 
+                        }
+                    
+                        if ( obj.name.match(/(start|end)_min/) ) {
+                            if ( tmp < 0 || tmp > 59 ) { 
+                                return show_message({ 
+                                    msg: 'Minutes must be between 0 and 59', 
+                                    msg_type: 'error',
+                                    el: obj
+                                }); 
+                            }
+                        }
+                        else if(obj.name.match(/(start|end)_hr/) && obj.init){
+                            // accommodate 0 to allow the value to be cleared (when resetting a line previously remembered).
+                            if ( tmp < 0 || tmp > 12 ) { 
+                                return show_message({ 
+                                    msg: 'Hour must be between 1 and 12', 
+                                    msg_type: 'error', 
+                                    el: obj 
+                                }); 
+                            }
+                        } 
+                    }
+                    
+                    
+                    cal_days_sum = function(){
+                      /* sum the hours column(s) and give a total of the hours shown -- mainly for multiple days */
+                      if(!this.rowTotals){
+                        this.rowTotals = {
+                          rowNormal : [],
+                          rowOvertime : [],
+                          rowTotal : []
+                        };
+                    
+                        /* build a list of the objects containing data we need to sum up */
+                        var tmparr = document.getElementsByTagName('div');
+                        for(var i=0; i<tmparr.length; i++){
+                          if(tmparr[i].id.match(/^rowNormal/))    this.rowTotals.rowNormal.push(tmparr[i]);
+                          if(tmparr[i].id.match(/^rowOvertime/))  this.rowTotals.rowOvertime.push(tmparr[i]);
+                          if(tmparr[i].id.match(/^rowTotal/))     this.rowTotals.rowTotal.push(tmparr[i]);
+                        }
+                    
+                      }
+                    
+                      /* sum that data */
+                      var rowSumNormal = 0;
+                      var rowSumOvertime = 0;
+                      var rowSumTotal = 0;
+                    
+                      for(var i=0; i<this.rowTotals.rowTotal.length; i++){
+                        rowSumNormal += parseFloat(this.rowTotals.rowNormal[i].innerHTML);
+                        rowSumOvertime += parseFloat(this.rowTotals.rowOvertime[i].innerHTML);
+                        rowSumTotal += parseFloat(this.rowTotals.rowTotal[i].innerHTML);
+                      }
+                    
+                      //if(rowSumNormal>0){
+                      //  if(!confirm(rowSumNormal + ' -- ' + rowSumOvertime + ' -- ' +rowSumTotal)){ exit; }
+                      //}
+                    
+                      /* update the summary of all rows totals */
+                      for(var i=0; i<5; i++){ /* top and bottom rows for convenience */
+                        var obj = document.getElementById('elTotalNormal'+i); 
+                          if(obj){ obj.innerHTML = rowSumNormal.toFixed(2); }
+                        var obj = document.getElementById('elTotalOvertime'+i); 
+                          if(obj){ obj.innerHTML = rowSumOvertime.toFixed(2); }
+                        var obj = document.getElementById('elTotalHours'+i); 
+                          if(obj){ obj.innerHTML = rowSumTotal.toFixed(2); }
+                      }
+                    
+                    }
+                    
+                    
+                    // accommodate optional 1/4 hour rounding
+                    function roundMinutes(minObj,hrObj){
+                    
+                        var f = minObj.form;
+                        var n = minObj.value;
+                        var h = parseInt(hrObj.value, 10);
+                        var row = minObj.name.match(/\d*$/);
+                        var name_prefix = minObj.name.match(/start|end/);
+                        var ampm = f.elements[ name_prefix + '_time' + row ]; // the associated AM/PM input
+                    
+                        if(n>=0 && n<=7) return '00';
+                        if(n>=8 && n<=22) return '15';
+                        if(n>=23 && n<=37) return '30';
+                        if(n>=38 && n<=52) return '45';
+                        if(n>52){
+                            hrObj.value = h+1;
+                        
+                            // 13 should roll the AM|PM over and become 1
+                            if ( hrObj.value > 12 ) {
+                                hrObj.value = 1
+                                if ( ampm.value === 'PM' ) ampm.value = 'AM';
+                                else ampm.value = 'PM';
+                            }
+                    
+                            return '00';
+                        }
+                    }
+                    
+                    
+                    calc = function(obj){
+                      var tot_hr;
+                      var tot_min;
+                      var t; /* temp current var (abbreviated) */
+                    
+                      /* get the sibling objects */
+                      var objN = obj.name.match(/\d+$/); //get the object number so we can find it's siblings
+                      var f = obj.form;
+                      var start_hr = eval('f.start_hr'+objN); 
+                      var start_min = eval('f.start_min'+objN);
+                      var start_time = eval('f.start_time'+objN);
+                      var end_hr = eval('f.end_hr'+objN);
+                      var end_min = eval('f.end_min'+objN);
+                      var end_time = eval('f.end_time'+objN);
+                      var break_hr = eval('f.break_hr'+objN);
+                      var break_min = eval('f.break_min'+objN);
+                    
+                      /* validate hour and minute limits */
+                      clear_message(); // clear error
+                      t = start_hr; validate(t);
+                      t = start_min; validate(t);
+                      t = end_hr; validate(t);
+                      t = end_min; validate(t);
+                      t = break_hr; validate(t);
+                      t = break_min; validate(t);
+                    
+                      /* accommodate optional 1/4 hour rounding */
+                      if(f.roundQTR.checked){
+                        start_min.value = roundMinutes(start_min,start_hr);
+                        end_min.value = roundMinutes(end_min,end_hr);
+                        break_min.value = roundMinutes(break_min,break_hr);
+                      }
+                    
+                      /* convert to 24 hour */  
+                      var tmp_start_hr = start_hr.value; 
+                        if(tmp_start_hr.length>1 && tmp_start_hr.charAt(0)=='0'){ 
+                          //remove leading string "0"
+                          tmp_start_hr=tmp_start_hr.substr(1,tmp_start_hr.length); 
+                        } 
+                      start_hr.val = parseInt(tmp_start_hr, 10); //force it to be a number
+                      //alert(start_hr.value + ' -- '+start_hr.val);
+                      if(start_time.options[start_time.selectedIndex].text.match(/PM/,'i')){
+                        if(start_hr.val < 12){ start_hr.val += 12; /* 01-11PM equal 13-23hrs in 24hr clock */ }
+                      } else { //AM
+                        if(start_hr.val == 12){ start_hr.val = 0; /* 12 AM = 00 AM */ }
+                      }
+                      
+                      end_hr.val = parseInt(end_hr.value, 10); 
+                      if(end_time.options[end_time.selectedIndex].text.match(/PM/,'i')){
+                        if(end_hr.val > 0 && end_hr.val < 12){ end_hr.val += 12; /* 01-11PM equal 13-23hrs in 24hr clock */ }
+                      } else {
+                        if(end_hr.val == 12){ end_hr.val = 0; /* 12 AM = 00 AM */ }
+                      }
+                      break_hr.val = parseInt(break_hr.value, 10);
+                      tot_hr = (end_hr.val - start_hr.val - break_hr.val);
+                    
+                      /* convert minutes from 60 to 100 */
+                      start_min.val = parseFloat(start_min.value) / 60;
+                      end_min.val = parseFloat(end_min.value) / 60;
+                      break_min.val = parseFloat(break_min.value) / 60;
+                    
+                      tot_min = (end_min.val - start_min.val - break_min.val);
+                    
+                      /* accommodate graveyard */
+                      if(start_hr.val > end_hr.val){
+                        end_hr.val += 24
+                        tot_hr = (end_hr.val - start_hr.val)
+                      }
+                    
+                      /* if the whole row is zero'd reset the total for that row */
+                      //alert(start_hr.val+'--'+start_min.val+'--'+end_hr.val+'--'+end_min.val);
+                      if( start_hr.val==0 && 
+                          start_min.val==0 && 
+                          end_hr.val==0 && 
+                          end_min.val==0
+                        ){ t = '0.00'; /* don't calculate a total if everything is "0" */ }
+                      else{
+                        t = parseFloat(parseFloat(tot_hr) + parseFloat(tot_min));
+                        if(t<0){ t = '0.00'; }
+                        else{
+                    
+                          /*
+                                // need a decimal point + two digits to it's right
+                                if(!t.toString().match(/\./)) t+= '.00' 
+                                else if(!t.toString().match(/.+\.[0-9][0-9]/)){
+                                  t+='00'
+                                }
+                                t = t.toString().match(/.+\.[0-9][0-9]/)
+                          */
+                          // try .toFixed() instead...
+                            t = t.toFixed(2);
+                    
+                        }
+                      }
+                    
+                        // alert(start_hr.val +'--'+ end_hr.val+'--tot_hr='+tot_hr+'--tot_min='+tot_min+'--t='+t);
+                        obj = document.getElementById('rowTotal'+objN); 
+                        var el = document.getElementById( 'message_el' );
+                        if ( el && el.innerHTML ) { 
+                            obj.innerHTML = 'NA'; 
+                            return; // an error occurred, return without continuing
+                        }
+                        else {
+                            obj.innerHTML = t;
+                    
+                            /* and backward calculate the normal and overtime hours from the total */
+                            var normalHours = parseFloat(t) || 0;
+                            var overtimeHours = 0;
+                    
+                            if(normalHours > 8){ 
+                              overtimeHours = normalHours - 8; normalHours = 8;
+                            }      
+                    
+                            obj = document.getElementById('rowNormal'+objN); obj.innerHTML = normalHours.toFixed(2);
+                            obj = document.getElementById('rowOvertime'+objN); obj.innerHTML = overtimeHours.toFixed(2);
+                    
+                      }
+                    
+                      cal_days_sum();
+                    }
+                    
+                    /* start by forcing a calc */
+                    document.ivForm.mcalc.click();
+                    //--></script>
+                    
+                    <div style="display:none;">
+                      (beta) 
+                    <table>
+                      <tbody><tr>
+                        <td>Send results to my email address: </td>
+                        <td><input type="text" name="mailto"></td>
+                      </tr>
+                      <tr>
+                        <td>Subject Line</td>  
+                        <td><input type="text" name="subject" value="timecard-submit"></td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td align="right"><input type="submit" value="Send"></td>
+                      </tr>
+                    </tbody></table>
+                    </div>
+                    </form>
+                    </div>
+    
+    
+    <script type="text/javascript">
+    //<!--
+    // datastore get
+    function ds_get( key ){
+        var ls = localStorage;
+        var ds, data;
+    
+        if ( !ls ) { 
+            console.error('Unable to find localStorage.');
+            return 0;
+        }
+    
+        try {
+            // create the data store if it doesn't exist
+            if ( typeof( ls.data ) === 'undefined' ) {
+    
+                data = {};
+    
+                // stringify it for localStorage
+                ls.data = JSON.stringify( data );
+    
+            }
+    
+            // get a reference to the data store
+            ds = ls.data;
+    
+        } catch( e ) {
+            console.error( e );
+        }
+    
+        if ( typeof( ds ) === 'string' && ds.length ) {
+            ds = JSON.parse( ds );
+        }
+    
+        // return the value of the requested key
+        if ( key ) {
+            return ds.data[ key ];
+        } 
+        // or a reference to the data store
+        else {
+            return ds;
+        }
+    }
+    
+    // datastore set
+    function ds_set( key, value ){
+    
+        var ds = ds_get();
+    
+    //    if ( typeof( ds.config ) === 'undefined' ) ds.config = {};
+    
+        try {
+            ds.data[ key ] = value;
+        } catch(e) {
+            // returning something means an error
+            return e;
+        }
+    
+        // returning nothing means success
+        return;
+    
+    }
+    
+    
+    function getCookie(name){
+      // usage: getCookie("name");
+      var oRE = new RegExp(name + "=([^;]+)") 
+      var sValue = oRE.exec(document.cookie);
+      return (sValue != null) ? unescape(sValue[1]) : null;
+    }
+    
+    function setCookie(name, value, ttl){ 
+      // usage: setCookie("name", value, (ttl=int number of days));
+      var oToday = new Date();
+      var sTTL = '';
+      if(ttl){
+        var expiry = new Date(oToday.getTime() + ttl * 24 * 60 * 60 * 1000); // set expiration of cookie based on ttl
+        sTTL='; expires=' + expiry.toGMTString();  
+      }
+      document.cookie=name + "=" + escape(value) + sTTL;
+    }
+    
+    function getTemplate(obj){
+      /* this button can set or delete the cookie...lets see which we're doing */
+    
+      if(obj.value.match(/Delete/)){
+        if(confirm('Click OK if you want to delete the cookie.')){
+    //      setCookie('ivForm',null,-1);
+            ds_set('ivForm', null );
+          obj.value = 'Remember as Template';
+          alert('Your remembered values are forgotten. The cookie has been cleared.');
+        }
+      }
+      else{
+        /* read the values from the app and store as cookie */
+        var vals = '';
+        var f = obj.form;
+        for(var i=0; i<f.elements.length; i++){
+          if(f.elements[i].name && f.elements[i].value){
+            switch(f.elements[i].type){
+              case 'checkbox': if(!f.elements[i].checked) continue; break; /* dont store value if the checkbox isn't checked */
+              case 'button': continue; break; /* don't need to store these vals */
+              default: break; 
+            }
+            vals += f.elements[i].name + '=' + f.elements[i].value +';';
+          }
+        }
+        var vals = escape(vals);
+    //    setCookie('ivForm',vals,3650);
+        ds_set('ivForm',vals);
+        obj.value = 'Delete Remembered Template Cookie';
+        alert('A cookie has been set to remember the current values next time this page is visited.');
+      }
+    }
+    
+    
+    // if cookie containing default values exists, ask user if it should be used to populate the form
+    function setTemplate(){
+        var arr, i, j, tmp, obj;
+        var f = document.ivForm;
+    //    var preset = getCookie('ivForm') || null;
+        var preset = ds_get('ivForm') || null;
+    alert(preset);
+        //  if(preset && confirm('Click ok to prefill the form with your remembered values.')){
+        if ( ! preset ) {
+            show_message({ 
+                msg: 'No remembered settings found. Fill out the form first, then press "Remember as Template" to store.', 
+                msg_type: 'warning'
+            });
+        } else {
+            show_message({ 
+                msg: 'Attempting to fill form values with your previously remembered settings.', 
+                msg_type: 'info' 
+            });
+    
+            preset = unescape( preset );
+            arr = preset.split(/;/);
+            for( i = 0; i < arr.length; i++ ) {
+                tmp = arr[i].split(/=/);
+                // if(!confirm(arr[i]+ ' -- ' +tmp[0]+ ' -- ' +tmp[1])) exit; // debugging
+                obj = eval( 'f.elements["' + tmp[0] + '"];');
+                if ( obj ) {
+                    switch( obj.type ) {
+                        case 'select-one': // IE doesn't set these correctly based on value alone...we have to scan the options
+                            for ( j = 0; j < obj.options.length; j++ ) {
+                                if ( obj.options[ j ].value == tmp[1] ) obj.selectedIndex = j;
+                            }
+                            break;
+                        case 'checkbox': 
+                            obj.checked = true; 
+                            break; // gotta do more than just set value on this one
+                        default: 
+                            obj.value = tmp[1]; 
+                            break; 
+                    }
+                }
+            }
+        }
+    }
+    
+    function calc_by_rate( el ) {
+        show_message({
+            msg: 'Attempting to apply rate to hours. (Please double-check this math!)',
+            msg_type: 'warning'
+        });
+    }
+    function cal_rate(el){
+        show_message({
+            msg:'Attempting to apply rate to hours.',
+            msg_type: 'warning'
+        });
+    }
+    
+    //--></script>
+    
+    
+    <table>
+      <tr valign="top">
+        <td>
+    <input type="button" name="mcalc" value="Calculate" onclick="
+      /* walk through the rows, use known input to generate cases for calc to operate on */
+      f = this.form; for(var i=0; i<f.elements.length; i++){
+        if(f.elements[i].name.match(/start_hr/)){ calc(f.elements[i]); }
+      }  
+      cal_days_sum();
+    "><input type="reset" value="Clear All" onclick="
+      if(confirm('Reset all fields?')){
+        try{ window.location.reload(location.href); }
+        catch(e){ location.href = location.href; }
+        /* need to do this in order to cause the total to be recalculated, not just clear the form fields */
+      } else{
+        return false;
+      }
+    "><input type="button" id="remember" name="remember" value="Remember as Template" onclick="
+        return getTemplate(this);
+    "><input type="button" id="fillform" name="fillform" value="Fill form" 
+        title="Fill the form with the values you previously marked as remember" 
+        onclick="
+            return setTemplate();
+    "><input type="button" value="Print" onclick="return hPrintClick(this);">
+    <script type="text/javascript">
+    //<!--
+    function manageRememberButton(){
+        var obj = document.getElementById('remember');
+    alert(ds_get('ivForm'));
+        if( obj && ds_get('ivForm') ) {
+            obj.value = 'Delete Remembered Template';
+        }
+        else{
+            obj.value = 'Remember as Template'
+        }
+    }
+    manageRememberButton();
+    //--></script>
+    
+        </td>
+        <td>
+       <input type="checkbox" accesskey="r" name="roundQTR"> <u>R</u>ound minutes to the nearest quarter hour. </td>
+      </tr>
+    </table>
+    
+    
+    <script type="text/javascript">
+    //<!--
+    
+    // global messaging display handler 
+    // supports message styling via CSS class
+    // suggestions: error, info, warning, success
+    function show_message( args ) {
+        el.innerHTML = args.msg || '';
+    
+      
+        // populate the message
+        el.className = args.msg_type || '';
+    
+        // add a close button
+        if ( el.innerHTML ) {
+            html = el.innerHTML;
+            el.innerHTML = '<table width="100%"><tr valign="top"><td width="100%">' + html + '</td>'
+                         + '<td><div onclick="clear_message();">(close)</div></td></tr></table>';
+        }
+    
+    
+        // if a source element was provided, set focus and select it as a user convenience
+    
+        
+        if ( args.el ) {
+            window.errObj = args.el;
+            setTimeout(function() {
+                if ( window.errObj.focus ) {
+                    window.errObj.focus();
+                }
+                if ( window.errObj.select ) {
+                    window.errObj.select();
+                } 
+                window.errObj=0;
+            }, 250);
+        }
+    
+        return false;
+    }
+    // clear the show_message handler
+    function clear_message(){ show_message(); }
+    
+    
+    validate = function(obj){
+        tmp = parseInt(obj.value,10);
+    
+        // confirm it's a number (added 12/12/2014)
+        if (isNaN(tmp)){ 
+            return show_message({ 
+                msg: 'Please enter a number.', 
+                msg_type: 'error' 
+            }); 
+        }
+    
+        if ( obj.name.match(/(start|end)_min/) ) {
+            if ( tmp < 0 || tmp > 59 ) { 
+                return show_message({ 
+                    msg: 'Minutes must be between 0 and 59', 
+                    msg_type: 'error',
+                    el: obj
+                }); 
+            }
+        }
+        else if(obj.name.match(/(start|end)_hr/) && obj.init){
+            // accommodate 0 to allow the value to be cleared (when resetting a line previously remembered).
+            if ( tmp < 0 || tmp > 12 ) { 
+                return show_message({ 
+                    msg: 'Hour must be between 1 and 12', 
+                    msg_type: 'error', 
+                    el: obj 
+                }); 
+            }
+        } 
+    }
+    
+    
+    cal_days_sum = function(){
+      /* sum the hours column(s) and give a total of the hours shown -- mainly for multiple days */
+      if(!this.rowTotals){
+        this.rowTotals = {
+          rowNormal : [],
+          rowOvertime : [],
+          rowTotal : []
+        };
+    
+        /* build a list of the objects containing data we need to sum up */
+        var tmparr = document.getElementsByTagName('div');
+        for(var i=0; i<tmparr.length; i++){
+          if(tmparr[i].id.match(/^rowNormal/))    this.rowTotals.rowNormal.push(tmparr[i]);
+          if(tmparr[i].id.match(/^rowOvertime/))  this.rowTotals.rowOvertime.push(tmparr[i]);
+          if(tmparr[i].id.match(/^rowTotal/))     this.rowTotals.rowTotal.push(tmparr[i]);
+        }
+    
+      }
+    
+      /* sum that data */
+      var rowSumNormal = 0;
+      var rowSumOvertime = 0;
+      var rowSumTotal = 0;
+    
+      for(var i=0; i<this.rowTotals.rowTotal.length; i++){
+        rowSumNormal += parseFloat(this.rowTotals.rowNormal[i].innerHTML);
+        rowSumOvertime += parseFloat(this.rowTotals.rowOvertime[i].innerHTML);
+        rowSumTotal += parseFloat(this.rowTotals.rowTotal[i].innerHTML);
+      }
+    
+      //if(rowSumNormal>0){
+      //  if(!confirm(rowSumNormal + ' -- ' + rowSumOvertime + ' -- ' +rowSumTotal)){ exit; }
+      //}
+    
+      /* update the summary of all rows totals */
+      for(var i=0; i<5; i++){ /* top and bottom rows for convenience */
+        var obj = document.getElementById('elTotalNormal'+i); 
+          if(obj){ obj.innerHTML = rowSumNormal.toFixed(2); }
+        var obj = document.getElementById('elTotalOvertime'+i); 
+          if(obj){ obj.innerHTML = rowSumOvertime.toFixed(2); }
+        var obj = document.getElementById('elTotalHours'+i); 
+          if(obj){ obj.innerHTML = rowSumTotal.toFixed(2); }
+      }
+    
+    }
+    
+    
+    // accommodate optional 1/4 hour rounding
+    function roundMinutes(minObj,hrObj){
+    
+        var f = minObj.form;
+        var n = minObj.value;
+        var h = parseInt(hrObj.value, 10);
+        var row = minObj.name.match(/\d*$/);
+        var name_prefix = minObj.name.match(/start|end/);
+        var ampm = f.elements[ name_prefix + '_time' + row ]; // the associated AM/PM input
+        var patt = new RegExp('start');
+    
+    
+        if(n>=0 && n<=7) return '00';
+        if(n>=8 && n<=22) return '15';
+        if(n>=23 && n<=37) return '30';
+        if(n>=38 && n<=52) return '45';
+        if(n>52){
+            hrObj.value = h+1;
+        
+            // 13 should roll the AM|PM over and become 1
+            if ( hrObj.value > 12 ) {
+                hrObj.value = 1
+                if ( ampm.value === 'PM' ) ampm.value = 'AM';
+                else ampm.value = 'PM';
+            }
+    
+            return '00';
+        }
+    }
+    
+    
+    calc = function(obj){
+      var tot_hr;
+      var tot_min;
+      var t; /* temp current var (abbreviated) */
+    
+      /* get the sibling objects */
+      var objN = obj.name.match(/\d+$/); //get the object number so we can find it's siblings
+      var f = obj.form;
+      var start_hr = eval('f.start_hr'+objN); 
+      var start_min = eval('f.start_min'+objN);
+      var start_time = eval('f.start_time'+objN);
+      var end_hr = eval('f.end_hr'+objN);
+      var end_min = eval('f.end_min'+objN);
+      var end_time = eval('f.end_time'+objN);
+      var break_hr = eval('f.break_hr'+objN);
+      var break_min = eval('f.break_min'+objN);
+    
+      /* validate hour and minute limits */
+      clear_message(); // clear error
+      t = start_hr; validate(t);
+      t = start_min; validate(t);
+      t = end_hr; validate(t);
+      t = end_min; validate(t);
+      t = break_hr; validate(t);
+      t = break_min; validate(t);
+    
+      /* accommodate optional 1/4 hour rounding */
+      if(f.roundQTR.checked){
+        start_min.value = roundMinutes(start_min,start_hr);
+        end_min.value = roundMinutes(end_min,end_hr);
+        break_min.value = roundMinutes(break_min,break_hr);
+      }
+    
+      /* convert to 24 hour */  
+      var tmp_start_hr = start_hr.value; 
+        if(tmp_start_hr.length>1 && tmp_start_hr.charAt(0)=='0'){ 
+          //remove leading string "0"
+          tmp_start_hr=tmp_start_hr.substr(1,tmp_start_hr.length); 
+        } 
+      start_hr.val = parseInt(tmp_start_hr, 10); //force it to be a number
+      //alert(start_hr.value + ' -- '+start_hr.val);
+      if(start_time.options[start_time.selectedIndex].text.match(/PM/,'i')){
+        if(start_hr.val < 12){ start_hr.val += 12; /* 01-11PM equal 13-23hrs in 24hr clock */ }
+      } else { //AM
+        if(start_hr.val == 12){ start_hr.val = 0; /* 12 AM = 00 AM */ }
+      }
+      
+      end_hr.val = parseInt(end_hr.value, 10); 
+      if(end_time.options[end_time.selectedIndex].text.match(/PM/,'i')){
+        if(end_hr.val > 0 && end_hr.val < 12){ end_hr.val += 12; /* 01-11PM equal 13-23hrs in 24hr clock */ }
+      } else {
+        if(end_hr.val == 12){ end_hr.val = 0; /* 12 AM = 00 AM */ }
+      }
+      break_hr.val = parseInt(break_hr.value, 10);
+      tot_hr = (end_hr.val - start_hr.val - break_hr.val);
+    
+      /* convert minutes from 60 to 100 */
+      start_min.val = parseFloat(start_min.value) / 60;
+      end_min.val = parseFloat(end_min.value) / 60;
+      break_min.val = parseFloat(break_min.value) / 60;
+    
+      tot_min = (end_min.val - start_min.val - break_min.val);
+    
+      /* accommodate graveyard */
+      if(start_hr.val > end_hr.val){
+        end_hr.val += 24
+        tot_hr = (end_hr.val - start_hr.val)
+      }
+    
+      /* if the whole row is zero'd reset the total for that row */
+      //alert(start_hr.val+'--'+start_min.val+'--'+end_hr.val+'--'+end_min.val);
+      if( start_hr.val==0 && 
+          start_min.val==0 && 
+          end_hr.val==0 && 
+          end_min.val==0
+        ){ t = '0.00'; /* don't calculate a total if everything is "0" */ }
+      else{
+        t = parseFloat(parseFloat(tot_hr) + parseFloat(tot_min));
+        if(t<0){ t = '0.00'; }
+        else{
+    
+          /*
+                // need a decimal point + two digits to it's right
+                if(!t.toString().match(/\./)) t+= '.00' 
+                else if(!t.toString().match(/.+\.[0-9][0-9]/)){
+                  t+='00'
+                }
+                t = t.toString().match(/.+\.[0-9][0-9]/)
+          */
+          // try .toFixed() instead...
+            t = t.toFixed(2);
+    
+        }
+      }
+    
+        // alert(start_hr.val +'--'+ end_hr.val+'--tot_hr='+tot_hr+'--tot_min='+tot_min+'--t='+t);
+        obj = document.getElementById('rowTotal'+objN); 
+        var el = document.getElementById( 'message_el' );
+        if ( el && el.innerHTML ) { 
+            obj.innerHTML = 'NA'; 
+            return; // an error occurred, return without continuing
+        }
+        else {
+            obj.innerHTML = t;
+    
+            /* and backward calculate the normal and overtime hours from the total */
+            var normalHours = parseFloat(t) || 0;
+            var overtimeHours = 0;
+    
+            if(normalHours > 8){ 
+              overtimeHours = normalHours - 8; normalHours = 8;
+            }      
+    
+            obj = document.getElementById('rowNormal'+objN); obj.innerHTML = normalHours.toFixed(2);
+            obj = document.getElementById('rowOvertime'+objN); obj.innerHTML = overtimeHours.toFixed(2);
+    
+      }
+    
+      cal_days_sum();
+    }
+    
+    /* start by forcing a calc */
+    document.ivForm.mcalc.click();
+    //--></script>
+    
+    <div style="display:none;">
+      (beta) 
+    <table>
+      <tr>
+        <td>Send results to my email address: </td>
+        <td><input type="text" name="mailto"></td>
+      </tr>
+      <tr>
+        <td>Subject Line</td>  
+        <td><input type="text" name="subject" value="timecard-submit"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td align="right"><input type="submit" value="Send"></td>
+      </tr>
+    </table>
+    </div>
+    </form>
+    </div>
+    
+    <script>
+    hSubmit = function(f){
+        return false; /* not working currently */
+    
+        clear_message();
+        if( ! f.mailto.value ) { 
+            return show_message({ msg: 'Email address field is empty.', msg_type: 'error' }); 
+        }
+        if( ! f.mailto.value.match(/\b[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}\b/) ) { 
+            return show_message({ 
+                msg: 'Email address doesn\'t appear to be valid pattern (example: me@mydomain.com)', 
+                msg_type: 'error'
+            }); 
+        }
+        if( ! confirm('Click "OK" to attempt sending this form using your own email program.') ) {
+            return show_message({ 
+                msg: 'Cancelling attempt to send form via email (you pressed "cancel").',
+                msg_type: 'error'
+            });
+        }
+        else{
+            // f.action = 'mailto:'+f.mailto.value;
+            f.action = '#';
+            return true;
+        }
+    
+        return false;
+    }
+    </script>
+    
+    
+    <!-- start: unit tests -->
+    <script type="text/javascript"><!--
+    function test(myCaller,sh,sm,st,eh,em,et,lh,lm){
+      if(!window.testTarget){ window.testTarget = 1; }
+      if(!window.lastCaller){ window.lastCaller = myCaller; }
+      else{ 
+        if(myCaller === window.lastCaller){ 
+          window.testTarget++;
+        }
+        else{
+          window.lastCaller = myCaller;
+          window.testTarget = 1; /* reset so our tests run on the first row of inputs */
+        }
+      }
+    
+      /* run test cases */
+      var f=document.ivForm;
+      var obj = eval('f.start_hr'+window.testTarget); if(obj) obj.value = sh;
+      var obj = eval('f.start_min'+window.testTarget); if(obj) obj.value = sm;
+      var obj = eval('f.start_time'+window.testTarget); if(obj) obj.selectedIndex = st;
+      var obj = eval('f.end_hr'+window.testTarget); if(obj) obj.value = eh;
+      var obj = eval('f.end_min'+window.testTarget); if(obj) obj.value = em;
+      var obj = eval('f.end_time'+window.testTarget); if(obj) obj.selectedIndex = et;
+      var obj = eval('f.break_hr'+window.testTarget); if(obj) obj.value = lh;
+      var obj = eval('f.break_min'+window.testTarget); if(obj) obj.value = lm;
+      var obj = eval('f.start_hr'+window.testTarget); if(obj) calc(obj); 
+    
+      return false;
+    }
+    //--></script>
+    <p><div class="notice">
+      Unit Tests: 
+      &nbsp;&nbsp;[<a id="optional4" href="#" onclick="return showHide(this)">Show</a>] 
+      <div id="optional4_content" style="display:none;">
+        <ul>
+        <li><button onclick="
+                document.ivForm.roundQTR.checked = 1;
+                return test(this,'12','58',0,'12','58',1,00,00);
+            ">Test</button> - Rounding case: 12:58 PM/12:58 AM should round up to 1 AM/1 PM and total to 12 hours (8 reg/4 ot)
+        <li><button onclick="
+                document.ivForm.roundQTR.checked = 1;
+                return test(this,'12','58',1,'12','58',0,00,00);
+            ">Test</button> - Rounding case: 12:58 AM/12:58 PM should round up to 1 PM/1 AM and total to 12 hours (8 reg/4 ot)
+        <li><button onclick="return test(this,'08','00',0,'05','00',1,00,00)">08:00 AM to 05:00 PM = 09 hrs 00 min</button> (a common base case -- stringified (force non-numeric data type))
+        <li><button onclick="return test(this,00,00,0,00,00,1,00,00)">00:00 AM to 00:00 PM = 00 hrs 00 min</button> (zero'ing out a row--shouldn't be used in calculating total)
+        <li><button onclick="return test(this,'08',00,0,05,00,1,00,00)">08:00 AM to 05:00 PM = 09 hrs 00 min</button> (a common base case)
+        <li><button onclick="return test(this,'08',30,0,05,30,1,00,00)">08:30 AM to 05:30 PM = 09 hrs 00 min</button> (confirm minutes calculate correctly)
+        <li><button onclick="return test(this,10,00,0,11,00,0,00,00)">10:00 AM to 11:00 AM = 01 hr  00 min</button> (a test case that doesn't cross AM/PM boundary)
+        <li><button onclick="return test(this,11,00,0,10,00,0,00,00)">11:00 AM to 10:00 AM = 23 hrs 00 min</button> (a weird case, probably error if entered, but sanity check)
+        <li><button onclick="return test(this,12,00,1,12,00,0,00,00)">12:00 PM to 12:00 AM = 12 hrs 00 min</button> (PM to AM boundary case A)
+        <li><button onclick="return test(this,12,00,0,12,00,1,00,00)">12:00 AM to 12:00 PM = 12 hrs 00 min</button> (AM to PM boundary case B)
+        <li><button onclick="return test(this,12,00,0,12,00,0,00,00)">12:00 AM to 12:00 AM = 00 hrs 00 min</button> (another weird case, but sanity check)
+        <li><button onclick="return test(this,12,00,1,12,00,1,00,00)">12:00 PM to 12:00 PM = 00 hrs 00 min</button> (another weird case, but sanity check)
+        <li><button onclick="return test(this,12,00,0,12,30,0,00,00)">12:00 AM to 12:30 AM = 00 hrs 30 min</button> (AM to PM boundary case B)
+        <li><button onclick="return test(this,11,00,0,11,00,1,00,00)">11:00 AM to 11:00 PM = 12 hrs 00 min</button> (AM to PM sanity check)
+        <li><button onclick="return test(this,11,00,1,11,00,0,00,00)">11:00 PM to 11:00 AM = 12 hrs 00 min</button> (PM to AM sanity check)
+        <li><button onclick="return test(this,09,00,1,06,00,0,00,00)">09:00 PM to 06:00 AM = 09 hrs 00 min</button> (graveyard shift)
+        <li><button onclick="return test(this,09,30,0,12,30,1,00,00)">09:30 AM to 12:30 PM = 03 hrs 00 min</button> (a case my initial tool miscalculated--oops, sorry about that)
+        </ul>
+      </div>
+    </div>
+    <!-- end: unit tests -->
+    
+    
+    <p><h2>Keywords: free online time sheet calculator</h2>
+    
+    <!-- add form effect and a button to the calculator -->
+    <script type="text/javascript">
+    function ivBtnToggle(obj){
+      var objT = document.getElementById('ivnS1'); // known id of the container holding the time card inputs
+      var obj2 = document.getElementById('cardViewPort');
+      if(obj.ivToggleState){
+        obj.ivToggleState = 0
+        obj.innerHTML = '+';
+        obj.title = 'Pin the calculator';
+        objT.style.position = '';
+        objT.style.padding = ''
+        objT.style.backgroundColor = '';
+        objT.style.left = '';
+        objT.style.top = '';
+        objT.style.border = '';
+        objT.style.width = 'auto';
+        objT.style.height = 'auto';
+        obj2.style.height = '300px';
+      }
+      else{
+        obj.ivToggleState = 1
+        obj.innerHTML = '-';
+        obj.title = 'Unpin the calculator';
+        objT.style.position = 'fixed';
+        objT.style.padding = '20px'
+        objT.style.backgroundColor = '#fff';
+        objT.style.left = '10px';
+        objT.style.top = '50px';
+        objT.style.border = '1px black solid';
+        objT.style.width = '800px';
+        objT.style.height = '600px';
+        obj2.style.height = '550px';
+      }
+      return false;
+    }
+    var obj = document.getElementById('ivnX');
+    obj.innerHTML += '&nbsp;&nbsp;<input type="button" id="floatUI" name="floatUI" onclick="ivBtnToggle(this);obj.blur();return false;" title="Pin the calculator" value="+">'
+    </script>
+    
+    
+    <div id="relatedLinks">
+    <ul>
+    <li><a href="http://www.esqsoft.com/">Home</a>
+    <li><a href="http://www.esqsoft.com/site-map.htm">SiteMap</a>
+    </ul>
+    </div>
+    
+    <!-- end: content -->
+    <script>document.write(footer())</script></body></html>
+    
+    
